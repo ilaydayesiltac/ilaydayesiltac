@@ -1,0 +1,128 @@
+* {
+    box-sizing: border-box;
+    margin: auto;
+  }
+
+  html,
+
+
+  #app {
+
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+.material-symbols-outlined {
+    width: 246px;
+    height: 141px;
+    font-size: 30px;
+}
+
+.logo{
+    color: #64113F;
+    text-align: center;
+    font-family: Lora;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    width: 691px;
+    height: 85px;
+    flex-shrink: 0;
+}
+
+
+
+.bi-cloud{
+    background-image: url("/application/frontend/src/assets/fingerpint.png");
+    background-size: 50% 50%, contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.slogan {
+    color: #17ADEE !important;
+    text-align: center;
+    font-family: Kiwi Maru;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    width: 592px;
+}
+
+.forms{
+  display: flex;
+}
+
+.forms .searchbar{
+  flex: 1;
+  border: none;
+  outline: none;
+  border: 1px solid #64113F;
+  width: 860px;
+  height: 75px;
+  flex-shrink: 0;
+  border-radius: 50px;
+  background: #FFF;
+  box-shadow: 0px 8px 8px 0px rgba(0, 0, 0, 0.25);
+  align-items: center;
+  margin: 20px !important;
+  padding: 10px 50px;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: rgba(0, 0, 0, 0.61);
+
+}
+.forms button{
+  background: #64113F;
+  position: absolute;
+  border-radius: 50px;
+  padding: 10px 50px;
+  width: 143px;
+  height: 44px;
+  margin-left: 720px ;
+  margin-top: 37px ;
+  border: none;
+  outline: none;
+  color: #FFF;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+.forms .fa-magnifying-glass{
+  display: flex !important;
+  position: absolute;
+  align-self: center;
+  padding-left: 40px;
+  color: #64113F;
+}
+.mainpagefooter{
+  color: #000;
+  margin-top: 260px !important;
+  text-align: center;
+  font-feature-settings: 'clig' off, 'liga' off;
+  font-family: Arial;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px; /* 183.333% */
+  letter-spacing: -0.408px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

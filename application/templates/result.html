@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3"></script>
+    <link rel="shortcut icon" href="../static/cloud.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../static/css/result_page.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <title>Results</title>
+    <script src="https://kit.fontawesome.com/0e749c348f.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <section>
+      <div id="app">
+        <h1 class="logo">Search Domain</h1>
+        <hr class="hr">
+        <form class="forms" action="/home">
+            <i class="fas fa-magnifying-glass"></i>
+            <input type="text" id="keyword" name="keyword" autocomplete="off" class="searchbar" placeholder={{ keyword }}  />
+            <button id="send" type="submit">Search</button>
+        </form>
+        <h1 class="logo">Results for "{{ keyword }}"</h1>
+        <hr class="hr">
+        <h4 class="h4">Showing {{ response|length }} results</h4>
+        <button type="submit" class="filters"><i class="fas fa-bars-filter"></i> Filters</button>
+      <form action="/delete">
+        <button type="submit" class="delete"><i class="fas fa-trash"></i> Select Delete</button>
+        <table>
+            <thead>
+                <th scope="col">#</th>
+                <th>Status</th>
+                <th>Domain Name</th>
+                <th>Domain Title</th>
+                <th>Key Situation</th>
+                <th>Selecteds</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% set count = namespace(value=0) %}
+            {% for domain in response %}
+                {% if domain.is_active == True %}
+                <tr>
+                    {% set count.value = count.value + 1 %}
+                    <th scope="row">{{ count.value }}</th>
+                    <td>{{ domain.status_code }}</td>
+                    <td><a>{{ domain.domain_name }}</a></td>
+                    <td>{{ domain.title }}</td>
+                    {% if  domain.is_it_key == True %}
+                    <td class="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 9 9" fill="none">
+                     <circle cx="4.65334" cy="4.50069" r="2.88478" fill="#14BA6D"/>
+                    </svg> {{ domain.is_it_key }}
+                    </td>
+                    {% else %}<td class="fals">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="8" height="9" viewBox="0 0 8 9" fill="none">
+                    <circle cx="4.15334" cy="4.50069" r="2.88478" fill="#FF0000"/>
+                    </svg>
+                    {% endif %} {{ domain.is_it_key }}</td>
+                    <td><input type="checkbox" id="domains_ids" name="domains_ids" value="{{ keyword }}"></td>
+                </tr>
+                {% else %}
+                {% endif %}
+            {% endfor %}
+            </tbody>
+          </table>
+      </form>
+    </div>
+
+    </section>
+
+    <script src="../static/js/index2.js"></script>
+    <script>
+        var savedValue = sessionStorage.getItem("savedValue");
+        if (savedValue) {
+            document.getElementById("sa").setAttribute("placeholder", savedValue);
+            sessionStorage.removeItem("savedValue");
+        }
+
+    </script>
+
+  </body>
+</html>
