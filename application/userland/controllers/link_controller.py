@@ -14,12 +14,15 @@ def short_url():
 
 
 # 641560
-@mod_userland.route('/redirect_to_original_url', methods=['GET'])
-def redirect_to_original_url():
-    short_url = request.args.get('key')
+@mod_userland.route('/<key>', methods=['GET'])
+def redirect_to_original_url(key):
 
-    response = LinkUtils.redirect_to_original_url(short_url)
-    return jsonify({"url": response})
+    response = LinkUtils.redirect_to_original_url(key)
+
+    if response.data is None:
+        return jsonify(response.__dict__)
+
+    return redirect(response.data)
 
 
 @mod_userland.route('/stats', methods=['GET'])
