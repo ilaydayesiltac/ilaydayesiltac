@@ -1,13 +1,9 @@
 import json
-import random
-import string
-
-import requests
 
 from application.core.app_models import BaseResponse
 from application.core.db_models import Link
 from application import db
-from flask import abort, redirect, request
+from flask import abort, request
 from user_agents import parse
 from application.utils.tools import Tools
 
@@ -52,57 +48,40 @@ class LinkUtils:
         return response
 
     @staticmethod
-    def get_stats():
+    def get_stats(key, private_key):
+        response = BaseResponse()
+        link = Link.query.filter(Link.key == key,
+                                 Link.private_key == private_key).first()  # get row according to url without duplicates
 
-        links = Link.query.distinct('original_url').all()  # get row according to url without duplicates
-        data = []
-        for link in links:
-            counter = 0
-            all_same_url = Link.query.filter_by(original_url=link.original_url).all()
+        if link is None:
+            abort(400, "key or private key could not be found!")
 
-            # calculate total counter number by url
-            for i in all_same_url:
-                counter += i.counter
+        statistic_data = json.loads(link.extra_information)
 
-            concatenated_extra_information = []
-            for inner_array in all_same_url:
-                if len(inner_array.extra_information) == 0:
-                    continue
-                extra_info = json.loads(inner_array.extra_information)
-                for obj in extra_info:
-                    concatenated_extra_information.append(obj)
+        ip_addresses = []
+        browsers = []
+        operating_systems = []
 
-            data.append({
-                "url": all_same_url[0].original_url,
-                "counter": counter,
-                "extra_information": concatenated_extra_information
-            })
+        for statistic in statistic_data:
+            ip_addresses.append(statistic['ip_address'])
+            browsers.append(statistic['browser'])
+            operating_systems.append(statistic['operating_system'])
 
-        return data
+        response.data = {
+            "url": link.original_url,
+            "counter": link.counter,
+            "ip_addresses": list(set(ip_addresses)),
+            "browsers": list(set(browsers)),
+            "operating_systems": list(set(operating_systems))
+        }
+
+        return response
 
     @staticmethod
     def get_url_stat_by_owner(key):
         response = BaseResponse()
         print(key)
         return response
-
-
-"""       
-    @staticmethod
-    def sign_in_user(email, password):
-        response = BaseResponse()
-        user = Users.query.filter(Users.email == email).first()
-        if user:
-            check_password = check_password_hash(user.password, password)
-            if check_password:
-                return response
-        else:
-            response = response.fail(message='User Not Found!')
-        return response
-"""
-
-
-
 
 
 def get_user_agent():
