@@ -24,6 +24,7 @@ class LinkUtils:
         else:
             response.fail(500, message='is not valid url.')
         # https: // smart_url.at / bhtR5
+        response.data = key
         return response
 
     @staticmethod
@@ -79,6 +80,12 @@ class LinkUtils:
 
         return data
 
+    @staticmethod
+    def get_url_stat_by_owner(key):
+        response = BaseResponse()
+        print(key)
+        return response
+
 
 """       
     @staticmethod
@@ -93,6 +100,9 @@ class LinkUtils:
             response = response.fail(message='User Not Found!')
         return response
 """
+
+
+
 
 
 def get_user_agent():
