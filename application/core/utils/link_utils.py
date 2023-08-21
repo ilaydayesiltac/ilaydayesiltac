@@ -28,10 +28,12 @@ class LinkUtils:
 
     @staticmethod
     def redirect_to_original_url(key):
+        response = BaseResponse()
         # check whether the key is available in database or not
         link = Link.query.filter_by(key=key).first()
         if link is None:
-            abort(400, 'the key is not defined!')
+            response.fail(400, 'the key is not defined!')
+            return response
 
         link.counter += 1
 
@@ -45,8 +47,8 @@ class LinkUtils:
 
         link.extra_information = updated_data
         db.session.commit()
-
-        return link.original_url
+        response.data = link.original_url
+        return response
 
     @staticmethod
     def get_stats():
