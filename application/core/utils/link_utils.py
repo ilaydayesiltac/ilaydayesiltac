@@ -22,7 +22,7 @@ class LinkUtils:
         else:
             response.fail(500, message='is not valid url.')
         # https: // smart_url.at / bhtR5
-        response.data = {'key':key,'private_key': link.private_key}
+        response.data = {'key': key, 'private_key': link.private_key}
         return response
 
     @staticmethod
@@ -58,31 +58,26 @@ class LinkUtils:
         if link is None:
             abort(400, "key or private key could not be found!")
 
-        # Assuming link.extra_information is a list
-        extra_information_list = link.extra_information
-
-        # Convert the list to a JSON string
-        extra_information_json_string = json.dumps(extra_information_list)
-
-        # Now you can use json.loads() to load the JSON string
-        statistic_data = json.loads(extra_information_json_string)
-
-        ip_addresses = []
-        browsers = []
-        operating_systems = []
-
-        for statistic in statistic_data:
-            ip_addresses.append(statistic['ip_address'])
-            browsers.append(statistic['browser'])
-            operating_systems.append(statistic['operating_system'])
-
+        # Assuming link.extra_information is a list # Assuming you're receiving the JSON as bytes
         response.data = {
             "url": link.original_url,
-            "counter": link.counter,
-            "ip_addresses": list(set(ip_addresses)),
-            "browsers": list(set(browsers)),
-            "operating_systems": list(set(operating_systems))
+            "counter": link.counter
         }
+        if len(link.extra_information) != 0:
+            statistic_data = json.loads(link.extra_information)
+            ip_addresses = []
+            browsers = []
+            operating_systems = []
+
+            for statistic in statistic_data:
+                print(statistic['ip_address'])
+                ip_addresses.append(statistic['ip_address'])
+                browsers.append(statistic['browser'])
+                operating_systems.append(statistic['operating_system'])
+
+            response.data["ip_addresses"] = list(set(ip_addresses))
+            response.data["browsers"] = list(set(browsers))
+            response.data["operating_systems"] = list(set(operating_systems))
 
         return response
 
