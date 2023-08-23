@@ -14,14 +14,15 @@ class LinkUtils:
     def generate_short_url(original_url):
         response = BaseResponse()
         key = Tools.generate_random_key(3)
+        link = Link(key=key, original_url=original_url, counter=0, extra_information=[], private_key=str(uuid.uuid4()))
+
         if Tools.is_valid_url(original_url):
-            link = Link(key=key, original_url=original_url, counter=0, extra_information=[],private_key=str(uuid.uuid4()))
             db.session.add(link)
             db.session.commit()
         else:
             response.fail(500, message='is not valid url.')
         # https: // smart_url.at / bhtR5
-        response.data = key
+        response.data = {'key':key,'private_key': link.private_key}
         return response
 
     @staticmethod
@@ -57,7 +58,14 @@ class LinkUtils:
         if link is None:
             abort(400, "key or private key could not be found!")
 
-        statistic_data = json.loads(link.extra_information)
+        # Assuming link.extra_information is a list
+        extra_information_list = link.extra_information
+
+        # Convert the list to a JSON string
+        extra_information_json_string = json.dumps(extra_information_list)
+
+        # Now you can use json.loads() to load the JSON string
+        statistic_data = json.loads(extra_information_json_string)
 
         ip_addresses = []
         browsers = []
