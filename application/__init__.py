@@ -11,8 +11,6 @@ app = Flask(__name__)
 migrate = Migrate()
 
 
-
-
 def load_blueprints(app):
     from application.userland.controller import mod_userland
     from application.userland.controllers.link_controller import mod_userland as link_module
@@ -30,16 +28,17 @@ def create_app(config_file_location=None):
         app.config.from_pyfile('../config/prp.cfg', silent=True)
         app.config.from_pyfile('../config/prod.cfg', silent=False)
 
-    #from application.core.db_models import DomainInfo
+    # from application.core.db_models import DomainInfo
     db.init_app(app)
 
     migrate.init_app(app, db)
-    #with app.app_context():
+    # with app.app_context():
     #    db.create_all()
 
     load_blueprints(app)
 
     return app
+
 
 """
 def redirectToLink(uniqueCode: str):

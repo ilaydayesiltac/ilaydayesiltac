@@ -6,8 +6,9 @@ from application.userland.controller import mod_userland
 from flask import redirect
 
 
-@mod_userland.route('/original_url/<original_url>', methods=['GET'])
-def generate_short_url(original_url):
+@mod_userland.route('/original_url', methods=['GET'])
+def generate_short_url():
+    original_url = request.args.get('original_url')
     response = LinkUtils.generate_short_url(original_url)
     return jsonify(response.__dict__)
 

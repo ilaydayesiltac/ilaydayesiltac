@@ -1,4 +1,5 @@
 import json
+import uuid
 
 from application.core.app_models import BaseResponse
 from application.core.db_models import Link
@@ -14,7 +15,7 @@ class LinkUtils:
         response = BaseResponse()
         key = Tools.generate_random_key(3)
         if Tools.is_valid_url(original_url):
-            link = Link(key=key, original_url=original_url, counter=0, extra_information=[])
+            link = Link(key=key, original_url=original_url, counter=0, extra_information=[],private_key=str(uuid.uuid4()))
             db.session.add(link)
             db.session.commit()
         else:

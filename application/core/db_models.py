@@ -14,6 +14,7 @@ class Link(db.Model):
     private_key = db.Column(db.String, unique=True, default=str(uuid.uuid4()))
     counter = db.Column(db.Integer)
     extra_information = db.Column(JSONB)
+
     # [
     #  {
     #    IP_address = db.Column(db.String)
