@@ -23,9 +23,8 @@ def redirect_to_original_url(key):
     return redirect(response.data)
 
 
-@mod_userland.route('/stats', methods=['GET'])
-def get_stats():
-    key = request.args.get('key')
+@mod_userland.route('/stats/<key>', methods=['GET'])
+def get_stats(key):
     private_key = request.args.get('private_key')
     response = LinkUtils.get_stats(key, private_key)
     return jsonify(response.__dict__)
