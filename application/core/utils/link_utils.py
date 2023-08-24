@@ -4,7 +4,7 @@ import uuid
 from application.core.app_models import BaseResponse
 from application.core.db_models import Link
 from application import db
-from flask import abort, request
+from flask import abort, request, jsonify
 from user_agents import parse
 from application.utils.tools import Tools
 
@@ -65,20 +65,38 @@ class LinkUtils:
         }
         if len(link.extra_information) != 0:
             statistic_data = json.loads(link.extra_information)
-            ip_addresses = []
-            browsers = []
-            operating_systems = []
+            ip_address_list = []
+            browser_list = []
+            operating_system_list = []
 
             for statistic in statistic_data:
                 print(statistic['ip_address'])
-                ip_addresses.append(statistic['ip_address'])
-                browsers.append(statistic['browser'])
-                operating_systems.append(statistic['operating_system'])
+                ip_address_list.append(statistic['ip_address'])
+                browser_list.append(statistic['browser'])
+                operating_system_list.append(statistic['operating_system'])
 
-            response.data["ip_addresses"] = list(set(ip_addresses))
-            response.data["browsers"] = list(set(browsers))
-            response.data["operating_systems"] = list(set(operating_systems))
+            # response.data["ip_addresses"] = list(ip_addresses)
+            # response.data["browsers"] = list(browsers)
+            # response.data["operating_systems"] = list(operating_systems)
 
+            browser_count = {}
+            operating_system_count = {}
+
+            for browser in browser_list:
+                if browser in browser_count:
+                    browser_count[browser] += 1
+                else:
+                    browser_count[browser] = 1
+
+            for operating_system in operating_system_list:
+                if operating_system in operating_system_count:
+                    operating_system_count[operating_system] += 1
+                else:
+                    operating_system_count[operating_system] = 1
+
+            response.data['browser_stats'] = browser_count
+            response.data['operating_system_stats'] = operating_system_count
+            response.data['unique_ip_addresses'] = list(set(ip_address_list))
         return response
 
     @staticmethod
