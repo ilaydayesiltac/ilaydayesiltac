@@ -20,7 +20,7 @@ def redirect_to_original_url(key):
     if response.data is None:
         return jsonify(response.__dict__)
 
-    return redirect(response.data)
+    return jsonify(response.__dict__)
 
 
 @mod_userland.route('/stats/<key>', methods=['GET'])

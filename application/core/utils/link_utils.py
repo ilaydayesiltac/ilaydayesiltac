@@ -14,21 +14,21 @@ class LinkUtils:
     def generate_short_url(original_url):
         response = BaseResponse()
         key = Tools.generate_random_key(3)
-        link = Link(key=key, original_url=original_url, counter=0, extra_information=[], private_key=str(uuid.uuid4()))
+        link = Link(key = key, original_url=original_url, counter=0, extra_information=[], private_key=str(uuid.uuid4()))
 
         if Tools.is_valid_url(original_url):
             db.session.add(link)
             db.session.commit()
         else:
             response.fail(500, message='is not valid url.')
-        # https: // smart_url.at / bhtR5
+
         response.data = {'key': key, 'private_key': link.private_key}
         return response
 
     @staticmethod
     def redirect_to_original_url(key):
         response = BaseResponse()
-        # check whether the key is available in database or not
+        print(request.headers.get('Referer'))
         link = Link.query.filter_by(key=key).first()
         if link is None:
             response.fail(400, 'the key is not defined!')
@@ -52,6 +52,7 @@ class LinkUtils:
     @staticmethod
     def get_stats(key, private_key):
         response = BaseResponse()
+
         link = Link.query.filter(Link.key == key,
                                  Link.private_key == private_key).first()  # get row according to url without duplicates
 
@@ -68,18 +69,16 @@ class LinkUtils:
             ip_address_list = []
             browser_list = []
             operating_system_list = []
+            origin_list = []
 
             for statistic in statistic_data:
-                print(statistic['ip_address'])
                 ip_address_list.append(statistic['ip_address'])
                 browser_list.append(statistic['browser'])
                 operating_system_list.append(statistic['operating_system'])
-
-            # response.data["ip_addresses"] = list(ip_addresses)
-            # response.data["browsers"] = list(browsers)
-            # response.data["operating_systems"] = list(operating_systems)
+                origin_list.append(statistic['origin'])
 
             browser_count = {}
+            origin_count = {}
             operating_system_count = {}
 
             for browser in browser_list:
@@ -94,15 +93,16 @@ class LinkUtils:
                 else:
                     operating_system_count[operating_system] = 1
 
-            response.data['browser_stats'] = browser_count
-            response.data['operating_system_stats'] = operating_system_count
-            response.data['unique_ip_addresses'] = list(set(ip_address_list))
-        return response
+            for origin in origin_list:
+                if origin in origin_count:
+                    origin_count[origin] += 1
+                else:
+                    origin_count[origin] = 1
 
-    @staticmethod
-    def get_url_stat_by_owner(key):
-        response = BaseResponse()
-        print(key)
+            response.data['browsers'] = browser_count
+            response.data['operating_systems'] = operating_system_count
+            response.data['origins'] = origin_count
+            response.data['unique_ip_addresses'] = list(set(ip_address_list))
         return response
 
 
@@ -113,11 +113,13 @@ def get_user_agent():
     browser = user_agent.browser.family
     operating_system = user_agent.os.family
     client_ip = request.remote_addr
+    origin = request.headers.get('Origin')
 
     extra_information = {
         "ip_address": client_ip,
         "browser": browser,
         "operating_system": operating_system,
+        "origin": origin,
     }
 
     return extra_information
